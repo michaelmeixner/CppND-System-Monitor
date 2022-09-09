@@ -136,7 +136,7 @@ vector<string> LinuxParser::CpuUtilization() {
     std::getline(stream, line);
     std::istringstream linestream(line);
     while(linestream >> value) {
-      processes.push_back(value);
+      processes.emplace_back(value);
     }
   }
   return processes;
@@ -230,8 +230,38 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) {
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { return string(); }
+string LinuxParser::User(int pid) {
+  string user, line, password, id;
+  std::ifstream stream(kPasswordPath);
+  if(stream.is_open()) {
+    while(std::getline(stream, line)) {
+      std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
+      while(linestream >> user >> password >> id) {
+        if(id == LinuxParser::Uid(pid)) {
+          break;
+        }
+      }
+    }
+  }
+  return user;
+}
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+long LinuxParser::UpTime(int pid[[maybe_unused]]) {
+  string line, value;
+  long uptime;
+  vector<string> values;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  if(stream.is_open()) {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    while(linestream >> value) {
+      values.emplace_back(value);
+    }
+  }
+  // not really sure what to do here
+  uptime = stol(values[21]);
+  return uptime;
+}
