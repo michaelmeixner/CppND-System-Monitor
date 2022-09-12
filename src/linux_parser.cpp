@@ -107,7 +107,6 @@ long LinuxParser::Jiffies() {
 // TODO: Read and return the number of active jiffies for a PID
 // I'm not sure I understand the jiffy function goals. This is my first attempt at what I think should return the total jiffies for a PID just to get some feedback.
 long LinuxParser::ActiveJiffies(int pid) {
-  long totalTime;
   string line, jiffy;
   vector<string> jiffies;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
