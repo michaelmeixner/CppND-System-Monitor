@@ -14,7 +14,7 @@ using std::vector;
 Process::Process(int pid) : pid(pid) {}
 
 // TODO: Return this process's ID
-int Process::Pid() const {
+int Pid() const {
     return pid;
 }
 
