@@ -11,11 +11,11 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-Process::Process(int pid) : pid(pid) {}
+Process(int pid) : pid(pid) {}
 
 // TODO: Return this process's ID
 int Pid() const {
-    return pid;
+    return ::pid;
 }
 
 // TODO: Return this process's CPU utilization
