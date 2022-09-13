@@ -19,7 +19,7 @@ int Process::Pid() const {
 }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() {
+float Process::CpuUtilization() const {
     return LinuxParser::CpuUtilization(Pid());
 }
 
@@ -47,5 +47,5 @@ long int Process::UpTime() {
 // REMOVE: [[maybe_unused]] once you define the function
 bool Process::operator<(Process const& a) const {
     // not sure about this one
-    // return a.CpuUtilization() < CpuUtilization();
+    return a.CpuUtilization() < CpuUtilization();
 }
