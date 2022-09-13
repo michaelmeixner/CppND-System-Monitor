@@ -15,7 +15,7 @@ Process::Process(int pid) : pid(pid) {}
 
 // TODO: Return this process's ID
 int Process::Pid() const {
-    return ::pid;
+    return pid;
 }
 
 // TODO: Return this process's CPU utilization
