@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 
@@ -138,6 +139,7 @@ vector<string> LinuxParser::CpuUtilization() {
       processes.emplace_back(value);
     }
   }
+  std::cout << processes[0];
   return processes;
 }
 
