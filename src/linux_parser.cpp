@@ -221,6 +221,13 @@ string LinuxParser::Command(int pid) {
   return command;
 }
 
+/**
+ * NOTE: Suggestion in submission review to change VmSize to VmRSS.
+ * VmSize is the sum of all the virtual memory, whereas when you use VmRSS then it gives the exact physical 
+ * memory being used as a part of Physical RAM.
+ * So it is recommended to replace the string VmSize with VmRSS as people who will be looking at your GitHub 
+ * might not have any idea of Virtual memory and so they will think you have done something wrong 
+ */
 string LinuxParser::Ram(int pid) {
   long memUsed;
   string line, key;
@@ -229,7 +236,7 @@ string LinuxParser::Ram(int pid) {
     while(std::getline(stream, line)) {
       std::istringstream linestream(line);
       linestream >> key;
-      if(key == "VmRSS:") {
+      if(key == "VmRSS:") { 
         linestream >> memUsed;
         break;
       }
