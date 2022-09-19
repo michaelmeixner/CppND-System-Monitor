@@ -1,31 +1,35 @@
 #include <string>
+#include <chrono>
+#include <iomanip>
+#include <sstream>
 
 #include "format.h"
 
 using std::string;
 using std::to_string;
 
-string Format::ElapsedTime(long int seconds) { 
-    int minutes, hours;
-    string hourStr, minuteStr, secondStr;
-    hours = seconds / 3600;
-    seconds = seconds % 3600;
-    minutes = seconds / 60;
-    seconds = seconds % 60;
-    if(hours < 10) {
-        hourStr = to_string(0) + to_string(hours);
-    } else {
-        hourStr = to_string(hours);
-    }
-    if(minutes < 10) {
-        minuteStr = to_string(0) + to_string(minutes);
-    } else {
-        minuteStr = to_string(minutes);
-    }
-    if(seconds < 10) {
-        secondStr = to_string(0) + to_string(seconds);
-    } else {
-        secondStr = to_string(seconds);
-    }
-    return hourStr + ":" + minuteStr + ":" + secondStr;
+string Format::ElapsedTime(long s) {
+  std::chrono::seconds seconds{s};
+
+  // return std::chrono::format("%T", seconds); // in C++20 :-)
+
+  std::chrono::hours hours =
+      std::chrono::duration_cast<std::chrono::hours>(seconds);
+
+  seconds -= std::chrono::duration_cast<std::chrono::seconds>(hours);
+
+  std::chrono::minutes minutes =
+      std::chrono::duration_cast<std::chrono::minutes>(seconds);
+
+  seconds -= std::chrono::duration_cast<std::chrono::seconds>(minutes);
+
+  std::stringstream ss{};
+
+  ss << std::setw(2) << std::setfill('0') << hours.count()     // HH
+     << std::setw(1) << ":"                                    // :
+     << std::setw(2) << std::setfill('0') << minutes.count()   // MM
+     << std::setw(1) << ":"                                    // :
+     << std::setw(2) << std::setfill('0') << seconds.count();  // SS
+
+  return ss.str();
 }
