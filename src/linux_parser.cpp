@@ -296,6 +296,6 @@ long LinuxParser::UpTime(int pid) {
   // not really sure what to do here
   uptime = stol(values[21]);
   stream.close();
-  int upTimePid = UpTime() - stol(var)/sysconf(_SC_CLK_TCK);
+  int upTimePid = UpTime() - stol(values[21])/sysconf(_SC_CLK_TCK);
   return upTimePid;
 }
