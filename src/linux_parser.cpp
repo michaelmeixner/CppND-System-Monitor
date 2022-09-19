@@ -222,11 +222,11 @@ string LinuxParser::Command(int pid) {
 }
 
 /**
- * NOTE: Suggestion in submission review to change VmSize to VmRSS.
- * VmSize is the sum of all the virtual memory, whereas when you use VmRSS then it gives the exact physical 
+ * NOTE: Suggestion in first submission review to change VmSize key to VmRSS.
+ * "VmSize is the sum of all the virtual memory, whereas when you use VmRSS then it gives the exact physical 
  * memory being used as a part of Physical RAM.
- * So it is recommended to replace the string VmSize with VmRSS as people who will be looking at your GitHub 
- * might not have any idea of Virtual memory and so they will think you have done something wrong 
+ * It is recommended to replace the string VmSize with VmRSS as people who will be looking at your GitHub 
+ * might not have any idea of Virtual memory and so they will think you have done something wrong."
  */
 string LinuxParser::Ram(int pid) {
   long memUsed;
@@ -296,5 +296,6 @@ long LinuxParser::UpTime(int pid) {
   // not really sure what to do here
   uptime = stol(values[21]);
   stream.close();
-  return uptime;
+  int upTimePid = UpTime() - stol(var)/sysconf(_SC_CLK_TCK);
+  return upTimePid;
 }
