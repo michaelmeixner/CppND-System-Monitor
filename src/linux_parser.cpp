@@ -283,6 +283,7 @@ string LinuxParser::User(int pid) {
 
 long LinuxParser::UpTime(int pid) {
   string line, value;
+  long uptime;
   vector<string> values;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   if(stream.is_open()) {
