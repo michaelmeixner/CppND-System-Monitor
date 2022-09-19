@@ -105,7 +105,6 @@ long LinuxParser::Jiffies() {
 }
 
 // TODO: Read and return the number of active jiffies for a PID
-// I'm not sure I understand the jiffy function goals. This is my first attempt at what I think should return the total jiffies for a PID just to get some feedback.
 long LinuxParser::ActiveJiffies(int pid) {
   string line, jiffy;
   vector<string> jiffies;
@@ -121,20 +120,33 @@ long LinuxParser::ActiveJiffies(int pid) {
 }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+// had to get help from this knowledge.udacity thread: https://knowledge.udacity.com/questions/900802
+long LinuxParser::ActiveJiffies() {
+    auto jiffies = CpuUtilization();
+    return stol(jiffies[CPUStates::kUser_]) + stol(jiffies[CPUStates::kNice_]) +
+          stol(jiffies[CPUStates::kSystem_]) + stol(jiffies[CPUStates::kIRQ_]) +
+          stol(jiffies[CPUStates::kSoftIRQ_]) +
+          stol(jiffies[CPUStates::kSteal_]);
+}
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+// had to get help from this knowledge.udacity thread: https://knowledge.udacity.com/questions/900802
+long LinuxParser::IdleJiffies() {
+    auto jiffies = CpuUtilization();
+    return stol(jiffies[CPUStates::kIdle_]) + stol(jiffies[CPUStates::kIOwait_]);
+}
 
 // TODO: Read and return CPU utilization
+// had to get help from this knowledge.udacity thread: https://knowledge.udacity.com/questions/900802
 vector<string> LinuxParser::CpuUtilization() {
-  string line, value;
+  string line, value, cpu;
   vector<string> processes;
   std::ifstream stream(kProcDirectory + kStatFilename);
-  if(stream.is_open()) {
+  if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    while(linestream >> value) {
+    linestream >> cpu;
+    while (linestream >> value) {
       processes.emplace_back(value);
     }
   }
