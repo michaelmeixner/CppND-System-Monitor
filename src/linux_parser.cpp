@@ -31,6 +31,7 @@ string LinuxParser::OperatingSystem() {
       }
     }
   }
+  filestream.close();
   return value;
 }
 
@@ -44,6 +45,7 @@ string LinuxParser::Kernel() {
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
+  stream.close();
   return kernel;
 }
 
@@ -84,6 +86,7 @@ float LinuxParser::MemoryUtilization() {
       }
     }
   }
+  stream.close();
   return (memTotal - memFree) / memTotal;
 }
 
@@ -96,6 +99,7 @@ long LinuxParser::UpTime() {
     std::istringstream linestream(line);
     linestream >> upTime;
   }
+  stream.close();
   return std::stol(upTime);
 }
 
@@ -116,6 +120,7 @@ long LinuxParser::ActiveJiffies(int pid) {
       jiffies.push_back(jiffy);
     }
   }
+  stream.close();
   return jiffies.size();
 }
 
@@ -150,6 +155,7 @@ vector<string> LinuxParser::CpuUtilization() {
       processes.emplace_back(value);
     }
   }
+  stream.close();
   return processes;
 }
 
@@ -170,6 +176,7 @@ float LinuxParser::CpuUtilization(int pid) {
     long seconds = LinuxParser::UpTime() - LinuxParser::UpTime(pid);
     utilization = seconds != 0 ? (totalTime/(float)seconds) : 0.0;
   }
+  stream.close();
   return utilization;
 }
 
@@ -189,6 +196,7 @@ int LinuxParser::TotalProcesses() {
       }
     }
   }
+  stream.close();
   return processes;
 }
 
@@ -208,6 +216,7 @@ int LinuxParser::RunningProcesses() {
       }
     }
   }
+  stream.close();
   return processes;
 }
 
@@ -219,6 +228,7 @@ string LinuxParser::Command(int pid) {
   if(stream.is_open()) {
     std::getline(stream, command);
   }
+  stream.close();
   return command;
 }
 
@@ -238,6 +248,7 @@ string LinuxParser::Ram(int pid) {
       }
     }
   }
+  stream.close();
   return std::to_string(memUsed);
 }
 
@@ -256,6 +267,7 @@ string LinuxParser::Uid(int pid[[maybe_unused]]) {
       }
     }
   }
+  stream.close();
   return id;
 }
 
@@ -275,6 +287,7 @@ string LinuxParser::User(int pid) {
       }
     }
   }
+  stream.close();
   return user;
 }
 
@@ -294,5 +307,6 @@ long LinuxParser::UpTime(int pid) {
   }
   // not really sure what to do here
   uptime = stol(values[21]);
+  stream.close();
   return uptime;
 }
