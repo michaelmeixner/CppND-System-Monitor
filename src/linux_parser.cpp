@@ -168,7 +168,7 @@ float LinuxParser::CpuUtilization(int pid) {
     int ticks = std::stoi(values[13]) + std::stoi(values[14]) + std::stoi(values[15]) + std::stoi(values[16]);
     long startTime = std::stol(values[21]);
     long totalTime = ticks / sysconf(_SC_CLK_TCK);
-    long seconds = LinuxParser::UpTime() - (startTime/sysconf(_SC_CLK_TCK));
+    long seconds = uptime - (startTime/sysconf(_SC_CLK_TCK));
     utilization = seconds != 0 ? (totalTime/seconds) : 0.0;
   }
   stream.close();
