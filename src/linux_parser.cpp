@@ -70,23 +70,26 @@ vector<int> LinuxParser::Pids() {
 }
 
 float LinuxParser::MemoryUtilization() {
-  string line, key;
-  float memTotal = 0, memFree = 0;
+  string line, key, value;
+  float mem_total = 0, mem_free = 0;
   std::ifstream stream(kProcDirectory + kMeminfoFilename);
   if(stream.is_open()) {
     while(std::getline(stream, line)) {
+      std::remove(line.begin(), line.end(), ' ');
+      std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
-      linestream >> key;
-      if(key == "MemTotal:") {
-        linestream >> memTotal;
-      } else if(key == "MemAvailable:") {
-        linestream >> memFree;
-        break;
+      while(linestream >> key >> value) {
+        if(key == "MemTotal") {
+          mem_total = std::stof(value);
+        } else if(key == "MemFree") {
+          mem_free = std::stof(value);
+          break;
+        }
       }
     }
   }
   stream.close();
-  return (memTotal - memFree) / memTotal;
+  return (mem_total - mem_free) / mem_total;
 }
 
 long LinuxParser::UpTime() {
