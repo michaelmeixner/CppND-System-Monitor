@@ -156,6 +156,7 @@ float LinuxParser::CpuUtilization(int pid) {
   string line, value;
   vector<string> values;
   float utilization = 0.0;
+  long uptime = UpTime();
   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
   if(stream.is_open()) {
     std::getline(stream, line);
@@ -165,9 +166,10 @@ float LinuxParser::CpuUtilization(int pid) {
       values.emplace_back(value);
     }
     int ticks = std::stoi(values[13]) + std::stoi(values[14]) + std::stoi(values[15]) + std::stoi(values[16]);
-    float totalTime = ticks / (float)sysconf(_SC_CLK_TCK);
-    long seconds = LinuxParser::UpTime() - LinuxParser::UpTime(pid);
-    utilization = seconds != 0 ? (totalTime/(float)seconds) : 0.0;
+    long startTime = std::stol(values[21]);
+    long totalTime = ticks / sysconf(_SC_CLK_TCK);
+    long seconds = LinuxParser::UpTime() - (startTime/sysconf(_SC_CLK_TCK));
+    utilization = seconds != 0 ? (totalTime/seconds) : 0.0;
   }
   stream.close();
   return utilization;
