@@ -269,16 +269,17 @@ string LinuxParser::Uid(int pid) {
 }
 
 string LinuxParser::User(int pid) {
-  string user, line, password, id;
+  string line, key, value, data, user;
   std::ifstream stream(kPasswordPath);
+  string uid = Uid(pid);
   if(stream.is_open()) {
     while(std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
-      while(linestream >> user >> password >> id) {
-        if(id == LinuxParser::Uid(pid)) {
-          break;
-        }
+      linestream >> key >> data >> value;
+      if(value == uid) {
+        user = key;
+        break;
       }
     }
   }
