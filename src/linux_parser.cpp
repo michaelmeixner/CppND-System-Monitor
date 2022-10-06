@@ -155,28 +155,28 @@ vector<string> LinuxParser::CpuUtilization() {
   return processes;
 }
 
-float LinuxParser::CpuUtilization(int pid) {
-  string line, value;
-  vector<string> values;
-  float utilization = 0.0;
-  long uptime = UpTime();
-  std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
-  if(stream.is_open()) {
-    std::getline(stream, line);
-    std::istringstream linestream(line);
-    while(linestream.good()) {
-      std::getline(linestream, value, ' ');
-      values.emplace_back(value);
-    }
-    int ticks = std::stoi(values[13]) + std::stoi(values[14]) + std::stoi(values[15]) + std::stoi(values[16]);
-    long startTime = std::stol(values[21]);
-    long totalTime = ticks / sysconf(_SC_CLK_TCK);
-    long seconds = uptime - (startTime/sysconf(_SC_CLK_TCK));
-    utilization = seconds != 0 ? (totalTime/seconds) : 0.0;
-  }
-  stream.close();
-  return utilization;
-}
+// float LinuxParser::CpuUtilization(int pid) {
+//   string line, value;
+//   vector<string> values;
+//   float utilization = 0.0;
+//   long uptime = UpTime();
+//   std::ifstream stream(kProcDirectory + to_string(pid) + kStatFilename);
+//   if(stream.is_open()) {
+//     std::getline(stream, line);
+//     std::istringstream linestream(line);
+//     while(linestream.good()) {
+//       std::getline(linestream, value, ' ');
+//       values.emplace_back(value);
+//     }
+//     int ticks = std::stoi(values[13]) + std::stoi(values[14]) + std::stoi(values[15]) + std::stoi(values[16]);
+//     long startTime = std::stol(values[21]);
+//     long totalTime = ticks / sysconf(_SC_CLK_TCK);
+//     long seconds = uptime - (startTime/sysconf(_SC_CLK_TCK));
+//     utilization = seconds != 0 ? (totalTime/seconds) : 0.0;
+//   }
+//   stream.close();
+//   return utilization;
+// }
 
 int LinuxParser::TotalProcesses() {
   string key, line, value;
@@ -269,14 +269,14 @@ string LinuxParser::Uid(int pid) {
 }
 
 string LinuxParser::User(int pid) {
-  string line, key, value, data, user;
+  string line, key, value, temp, user;
   std::ifstream stream(kPasswordPath);
   string uid = Uid(pid);
   if(stream.is_open()) {
     while(std::getline(stream, line)) {
       std::replace(line.begin(), line.end(), ':', ' ');
       std::istringstream linestream(line);
-      linestream >> key >> data >> value;
+      linestream >> key >> temp >> value;
       if(value == uid) {
         user = key;
         break;
