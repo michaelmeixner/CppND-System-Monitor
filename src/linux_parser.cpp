@@ -234,21 +234,21 @@ string LinuxParser::Command(int pid) {
  * might not have any idea of Virtual memory and so they will think you have done something wrong."
  */
 string LinuxParser::Ram(int pid) {
-  long memUsed;
-  string line, key;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  string line, key, value;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
   if(stream.is_open()) {
     while(std::getline(stream, line)) {
       std::istringstream linestream(line);
-      linestream >> key;
-      if(key == "VmRSS:") { 
-        linestream >> memUsed;
-        break;
+      while(linestream >> key >> value) {
+        if(key == "VmRSS:") {
+          int size = std::stoi(value) / 1024;
+          return to_string(size);
+        }
       }
     }
   }
   stream.close();
-  return std::to_string(memUsed);
+  return std::string();
 }
 
 string LinuxParser::Uid(int pid) {
