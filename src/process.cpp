@@ -18,7 +18,7 @@ int Process::Pid() const {
 }
 
 float Process::CpuUtilization() const {
-    return (float)LinuxParser::ActiveJiffies(_pid) / (float)(LinuxParser::UpTime() - LinuxParser::UpTime(_pid));
+    return (float)LinuxParser::ActiveJiffies(pid) / (float)(LinuxParser::UpTime() - LinuxParser::UpTime(pid));
 }
 
 string Process::Command() {
