@@ -109,18 +109,31 @@ long LinuxParser::Jiffies() {
 }
 
 long LinuxParser::ActiveJiffies(int pid) {
-  string line, jiffy;
-  vector<string> jiffies;
+  long totaltime;
+  string line, value;
+  // make sure parsing was correct and values was read
+  long utime = 0, stime = 0, cutime = 0, cstime = 0;
+  vector<string> values;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
-  if(stream.is_open()) {
+  if (stream.is_open()) {
     std::getline(stream, line);
     std::istringstream linestream(line);
-    while(linestream >> jiffy) {
-      jiffies.push_back(jiffy);
+    while (linestream >> value) {
+      values.push_back(value);
     }
+
+    if (std::all_of(values[13].begin(), values[13].end(), isdigit))
+      utime = stol(values[13]);
+    if (std::all_of(values[14].begin(), values[14].end(), isdigit))
+      stime = stol(values[14]);
+    if (std::all_of(values[15].begin(), values[15].end(), isdigit))
+      cutime = stol(values[15]);
+    if (std::all_of(values[16].begin(), values[16].end(), isdigit))
+      cstime = stol(values[16]);
   }
-  stream.close();
-  return jiffies.size();
+
+  totaltime = utime + stime + cutime + cstime;
+  return totaltime / sysconf(_SC_CLK_TCK);
 }
 
 // had to get help from this knowledge.udacity thread: https://knowledge.udacity.com/questions/900802

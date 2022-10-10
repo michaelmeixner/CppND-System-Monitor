@@ -22,6 +22,7 @@ vector<Process>& System::Processes() {
     for(auto i : pids) {
         processes_.emplace_back(Process(i));
     }
+    sort(processes_.begin(), processes_.end());
     return processes_;    
 }
 
